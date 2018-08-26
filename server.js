@@ -39,7 +39,11 @@ app.get('/api/exercise/log', (req, res) => {
       userId: userId, 
     };
   
-  if (from && to) {
+  if (from) {
+    query['date'] = {'$gte': from, '$lte': to};
+  }
+  
+  if (to) {
     query['date'] = {'$gte': from, '$lte': to};
   }
 
@@ -78,12 +82,11 @@ app.post('/api/exercise/add', (req, res) => {
   }
   
   User.findById(req.body.userId, (err, data) => {
-    if (err) throw err;
-    
-    if (!data) {
-      return res.send('Unknown _id value');
+
+    if (err || !data) {
+      return res.send('Unknown _id');
     }
-    
+
     let exercise = { 
       userId: req.body.userId,
       description: req.body.description,
