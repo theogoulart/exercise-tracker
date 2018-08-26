@@ -8,7 +8,11 @@ const mongoose = require('mongoose')
 mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
 
 const User = mongoose.model('User', new mongoose.Schema({
-                              username: String
+                              username: {
+                                type: String, 
+                                required: true,
+                                unique: true
+                              }
                             })),
       Exercise = mongoose.model('Exercise', new mongoose.Schema({
                               userId: { type: Number, required: true },
@@ -35,15 +39,18 @@ app.get('/api/exercise/log', (req, res) => {
 
 app.post('/api/exercise/new-user', (req, res) => {
 
-  if (!req.body.username) return;
-  
+  if (!req.body.username) {
+    res.send('username is required!');
+    
+  }
+
   let user = new User({ username: req.body.username });
   user.save((err, data) => {
   
     if (err) throw err;
 
     console.log('user '+ req.body.username +' created!');
-    res.status(201).send('User created!');
+    res.status(201).json(data);
 
   });
   
@@ -53,13 +60,20 @@ app.post('/api/exercise/add', (req, res) => {
 
   if (!req.body.userId || !req.body.description || !req.body.duration) return;
   
-  let user = new User({ username: req.body.username });
-  user.save((err, data) => {
+  let exercise = new Exercise(
+    { 
+      userId: req.body.userId,
+      description: req.body.description,
+      duration: req.body.duration,
+      date: req.body.date 
+    });
+  
+  exercise.save((err, data) => {
   
     if (err) throw err;
 
-    console.log('user '+ req.body.username +' created!');
-    res.status(201).send('User created!');
+    console.log('exercise created!');
+    res.status(201).send('Exercise created!');
 
   });
   
