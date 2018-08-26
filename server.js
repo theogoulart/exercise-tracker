@@ -39,10 +39,21 @@ app.get('/api/exercise/log', (req, res) => {
       userId: userId, 
     };
 
-  if (from || to) {
-    query['date'] = {'$gte': from, '$lte': to};
+  if (validateDate(from) || validateDate(to)) {
+    query['date'] = {};
+    
+    if (validateDate(from)) {
+      query['date']['$gte'] = from;
+    }
+
+    if (validateDate(to)) {
+      query['date']['$lte'] = to;
+    }
+
   }
 
+  console.log(query['date']);
+  
   Exercise.find(query)
     .limit(limit)
     .exec((err, data) => {
@@ -144,5 +155,16 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 })
 
 function validateDate (val) {
-  try {}
+
+  let date;
+  
+  try {
+    date = new Date(val);
+  } catch (e) {
+    return false;
+  }
+
+  console.log(date);
+  
+  return true;
 }
