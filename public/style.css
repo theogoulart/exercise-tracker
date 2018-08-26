@@ -25,6 +25,7 @@ p {
 
 form {
   margin-bottom: 25px;
+  margin-right: 20px;
   padding: 15px;
   background-color: #87D37C;
   display: inline-block;
@@ -61,4 +62,9 @@ code {
   font-size: 1.2em;
   background-color: #FFFEC4;
   padding: 2px;
+}
+
+.form__container {
+  display: flex;
+  align-items: flex-start;
 }
