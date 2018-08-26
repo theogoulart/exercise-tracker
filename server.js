@@ -7,12 +7,14 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MLAB_URI || 'mongodb://localhost/exercise-track' )
 
-const User = mongoose.Model('User', new mongoose.Schema({
+const User = mongoose.model('User', new mongoose.Schema({
                               username: String
                             })),
-      Exercise = mongoose.Model('Exercise', new mongoose.Schema({
+      Exercise = mongoose.model('Exercise', new mongoose.Schema({
                               userId: { type: Number, required: true },
-        
+                              description: { type: String, required: true },
+                              duration: { type: Number, required: true },
+                              date: { type: Date, default: new Date() }
                             }));
 
 app.use(cors())
@@ -33,10 +35,34 @@ app.get('/api/exercise/log', (req, res) => {
 
 app.post('/api/exercise/new-user', (req, res) => {
 
+  if (!req.body.username) return;
+  
+  let user = new User({ username: req.body.username });
+  user.save((err, data) => {
+  
+    if (err) throw err;
+
+    console.log('user '+ req.body.username +' created!');
+    res.status(201).send('User created!');
+
+  });
+  
 });
 
 app.post('/api/exercise/add', (req, res) => {
 
+  if (!req.body.userId || !req.body.description || !req.body.duration) return;
+  
+  let user = new User({ username: req.body.username });
+  user.save((err, data) => {
+  
+    if (err) throw err;
+
+    console.log('user '+ req.body.username +' created!');
+    res.status(201).send('User created!');
+
+  });
+  
 });
 
 
