@@ -15,7 +15,7 @@ const User = mongoose.model('User', new mongoose.Schema({
                               }
                             })),
       Exercise = mongoose.model('Exercise', new mongoose.Schema({
-                              userId: { type: Number, required: true },
+                              userId: { type: String, required: true },
                               description: { type: String, required: true },
                               duration: { type: Number, required: true },
                               date: { type: Date, default: new Date() }
@@ -56,7 +56,7 @@ app.get('/api/exercise/log', (req, res) => {
 app.post('/api/exercise/new-user', (req, res) => {
 
   if (!req.body.username) {
-    return res.send('username is required!');
+    return res.send('Error. Username is required!');
   }
 
   let user = new User({ username: req.body.username });
@@ -74,7 +74,7 @@ app.post('/api/exercise/add', (req, res) => {
       || !req.body.description 
       || !req.body.duration) {
     
-    return res.send('Fill all required fields accordingly!');
+    return res.send('Error. Fill all required fields accordingly!');
   }
   
   let exercise = new Exercise(
@@ -82,9 +82,12 @@ app.post('/api/exercise/add', (req, res) => {
       userId: req.body.userId,
       description: req.body.description,
       duration: req.body.duration,
-      date: req.body.date 
     });
   
+  if (req.body.date) {
+    exercise['date'] = req.body.date;
+  }
+
   exercise.save((err, data) => {
   
     if (err) throw err;
