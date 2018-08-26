@@ -40,17 +40,17 @@ app.get('/api/exercise/log', (req, res) => {
     };
   
   if (from && to) {
-    query['date'] = {};
+    query['date'] = {'$gte': from, '$lte': to};
   }
 
   Exercise.find(query)
     .limit(limit)
     .exec((err, data) => {
   
-    if (err) throw err;
-    
-    
-  });
+      if (err) throw err;
+      res.json(data);
+
+    });
 });
 
 app.post('/api/exercise/new-user', (req, res) => {
@@ -72,7 +72,10 @@ app.post('/api/exercise/add', (req, res) => {
 
   if (!req.body.userId 
       || !req.body.description 
-      || !req.body.duration) return;
+      || !req.body.duration) {
+    
+    return res.send('Fill all required fields accordingly!');
+  }
   
   let exercise = new Exercise(
     { 
