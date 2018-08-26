@@ -33,8 +33,24 @@ app.get('/', (req, res) => {
 
 app.get('/api/exercise/log', (req, res) => {
   let {userId, from, to, limit} = req.query;
+  if (!userId) return;
   
-  if (!userId) return; 
+  let query = {
+      userId: userId, 
+    };
+  
+  if (from && to) {
+    query['date'] = {};
+  }
+
+  Exercise.find(query)
+    .limit(limit)
+    .exec((err, data) => {
+  
+    if (err) throw err;
+    
+    
+  });
 });
 
 app.post('/api/exercise/new-user', (req, res) => {
@@ -47,17 +63,16 @@ app.post('/api/exercise/new-user', (req, res) => {
   user.save((err, data) => {
   
     if (err) throw err;
-
-    console.log('user '+ req.body.username +' created!');
     res.status(201).json(data);
-
   });
   
 });
 
 app.post('/api/exercise/add', (req, res) => {
 
-  if (!req.body.userId || !req.body.description || !req.body.duration) return;
+  if (!req.body.userId 
+      || !req.body.description 
+      || !req.body.duration) return;
   
   let exercise = new Exercise(
     { 
@@ -70,9 +85,7 @@ app.post('/api/exercise/add', (req, res) => {
   exercise.save((err, data) => {
   
     if (err) throw err;
-
-    console.log('exercise created!');
-    res.status(201).send('Exercise created!');
+    res.status(201).json(data);
 
   });
   
