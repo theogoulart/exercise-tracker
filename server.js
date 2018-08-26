@@ -13,13 +13,13 @@ const User = mongoose.model('User', new mongoose.Schema({
                                 required: true,
                                 unique: true
                               }
-                            })),
+                            }, {versionKey: false})),
       Exercise = mongoose.model('Exercise', new mongoose.Schema({
                               userId: { type: String, required: true },
                               description: { type: String, required: true },
                               duration: { type: Number, required: true },
                               date: { type: Date, default: new Date() }
-                            }));
+                            }, {versionKey: false}));
 
 app.use(cors())
 
@@ -85,7 +85,16 @@ app.post('/api/exercise/add', (req, res) => {
     });
   
   if (req.body.date) {
-    exercise['date'] = req.body.date;
+    
+    let date = req.body.date;
+    
+    try {
+      date = new Date(date);
+    } catch (e) {
+      return res.send('')
+    }
+
+    exercise['date'] = date;
   }
 
   exercise.save((err, data) => {
