@@ -77,31 +77,40 @@ app.post('/api/exercise/add', (req, res) => {
     return res.send('Error. Fill all required fields accordingly!');
   }
   
-  let exercise = new Exercise(
-    { 
+  User.findById(req.body.userId, (err, data) => {
+    if (err) throw err;
+    
+    if (!data) {
+      return res.send('Unknown _id value');
+    }
+    
+    let exercise = { 
       userId: req.body.userId,
       description: req.body.description,
       duration: req.body.duration,
-    });
-  
-  if (req.body.date) {
-    
-    let date = req.body.date;
-    
-    try {
-      date = new Date(date);
-    } catch (e) {
-      return res.send('')
+    };
+
+    if (req.body.date) {
+
+      let date = req.body.date;
+
+      try {
+        date = new Date(date);
+      } catch (e) {
+        return res.send('Error. Date casting error, check date format.');
+      }
+
+      exercise['date'] = date;
     }
 
-    exercise['date'] = date;
-  }
+    exercise = new Exercise(exercise);
+    exercise.save((err, data) => {
 
-  exercise.save((err, data) => {
-  
-    if (err) throw err;
-    res.status(201).json(data);
+      if (err) throw err;
+      res.status(201).json(data);
 
+    });
+    
   });
   
 });
