@@ -40,8 +40,7 @@ app.get('/api/exercise/log', (req, res) => {
 app.post('/api/exercise/new-user', (req, res) => {
 
   if (!req.body.username) {
-    res.send('username is required!');
-    
+    return res.send('username is required!');
   }
 
   let user = new User({ username: req.body.username });
