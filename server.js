@@ -38,12 +38,8 @@ app.get('/api/exercise/log', (req, res) => {
   let query = {
       userId: userId, 
     };
-  
-  if (from) {
-    query['date'] = {'$gte': from, '$lte': to};
-  }
-  
-  if (to) {
+
+  if (from || to) {
     query['date'] = {'$gte': from, '$lte': to};
   }
 
@@ -146,3 +142,7 @@ app.use((err, req, res, next) => {
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log('Your app is listening on port ' + listener.address().port)
 })
+
+function validateDate (val) {
+  try {}
+}
