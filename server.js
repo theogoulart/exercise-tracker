@@ -156,6 +156,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 function validateDate (val) {
 
+  if (!val) 
   let date;
   
   try {
@@ -164,7 +165,5 @@ function validateDate (val) {
     return false;
   }
 
-  console.log(date);
-  
   return true;
 }
