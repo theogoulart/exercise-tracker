@@ -156,9 +156,9 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 function validateDate (val) {
 
-  if (!val) 
+  if (!(val instanceof String)) return false;
   let date;
-  
+
   try {
     date = new Date(val);
   } catch (e) {
