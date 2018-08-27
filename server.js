@@ -166,8 +166,6 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 function validateDate (val) {
 
-  console.log(val instanceof String);
-  if (!(val instanceof String)) return false;
   let date;
 
   try {
@@ -176,5 +174,5 @@ function validateDate (val) {
     return false;
   }
 
-  return true;
+  return !isNaN(date.getTime());
 }
