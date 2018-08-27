@@ -89,7 +89,8 @@ app.post('/api/exercise/add', (req, res) => {
 
   if (!req.body.userId 
       || !req.body.description 
-      || !req.body.duration) {
+      || !req.body.duration 
+      || isNaN(req.body.duration)) {
     
     return res.send('Error. Fill all required fields accordingly!');
   }
