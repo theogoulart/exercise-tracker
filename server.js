@@ -70,11 +70,17 @@ app.post('/api/exercise/new-user', (req, res) => {
     return res.send('Error. Username is required!');
   }
 
-  let user = new User({ username: req.body.username });
-  user.save((err, data) => {
-  
-    if (err) throw err;
-    res.status(201).json(data);
+  User.find({username: req.body.username}, (err, data) => {
+    if (data.length > 0) {
+      return res.send('username is already in use');
+    }
+
+    let user = new User({ username: req.body.username });
+    user.save((err, data) => {
+      if (err) throw err;
+      res.status(201).json(data);
+    });
+
   });
   
 });
@@ -101,6 +107,10 @@ app.post('/api/exercise/add', (req, res) => {
     };
 
     if (req.body.date) {
+
+      if (!validateDate(req.body.date)) {
+        return res.send('Error. Date casting error, check date format.');
+      }
 
       let date = req.body.date;
 
@@ -156,6 +166,7 @@ const listener = app.listen(process.env.PORT || 3000, () => {
 
 function validateDate (val) {
 
+  console.log(val instanceof String);
   if (!(val instanceof String)) return false;
   let date;
 
